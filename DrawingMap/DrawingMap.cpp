@@ -8,6 +8,13 @@ using namespace sf;
 
 const size_t columns = 16, rows = 10;
 
+enum Side {
+	Left,
+	Right,
+	Up, 
+	Down
+};
+
 void printMap(int(&map)[rows][columns]) {
 	for (size_t row = 0; row < rows; ++row) {
 		for (size_t column = 0; column < columns; ++column) {
@@ -54,14 +61,14 @@ void updateVec(vector<pair<int, int>>& coord_for_draw, int x, int y) {
 	coord_for_draw.push_back(make_pair(x, y));
 }
 
-void moving(int(&map)[rows][columns], int& x, int& y, vector<pair<int, int>>& coord_for_draw, int side) {
+void moving(int(&map)[rows][columns], int& x, int& y, vector<pair<int, int>>& coord_for_draw, Side& si) {
 	int adder_x = 0, adder_y = 0, d_x = 0, d_y = 0, temp_x = x, temp_y = y, for_if = 0;
 	
-	switch (side) {
-	case 1: x -= 1; d_y = 1; for_if = y; break;
-	case 2: x += 1; d_y = 1; adder_x = (x % 10 == 0) ? 0 : 1; for_if = y; break;
-	case 3: y -= 1; d_x = 1; for_if = x; break;
-	case 4: y += 1; d_x = 1; adder_y = (y % 10 == 0) ? 0 : 1; for_if = x; break;
+	switch (si) {
+	case Left: x -= 1; d_y = 1; for_if = y; break;
+	case Right: x += 1; d_y = 1; adder_x = (x % 10 == 0) ? 0 : 1; for_if = y; break;
+	case Up: y -= 1; d_x = 1; for_if = x; break;
+	case Down: y += 1; d_x = 1; adder_y = (y % 10 == 0) ? 0 : 1; for_if = x; break;
 	}
 
 	if (for_if % 10 == 0) {
@@ -117,19 +124,23 @@ int main()
 
 
 				if (event.key.code == Keyboard::Left) {
-					moving(map, x, y, coord_for_draw, 1);
+					Side side = Side::Left;
+					moving(map, x, y, coord_for_draw, side);
 				}
 
 				if (event.key.code == Keyboard::Right) {
-					moving(map, x, y, coord_for_draw, 2);
+					Side side = Side::Right;
+					moving(map, x, y, coord_for_draw, side);
 				}
 
 				else if (event.key.code == Keyboard::Up) {
-					moving(map, x, y, coord_for_draw, 3);
+					Side side = Side::Up;
+					moving(map, x, y, coord_for_draw, side);
 				}
 
 				else if (event.key.code == Keyboard::Down) {
-					moving(map, x, y, coord_for_draw, 4);
+					Side side = Side::Down;
+					moving(map, x, y, coord_for_draw, side);
 				}
 
 			}
