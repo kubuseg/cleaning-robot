@@ -1,30 +1,57 @@
 #include <iostream>
-#include <vector>
-#include <SFML/Graphics.hpp>
-#include <string>
-
+#include "DrawnMap.h"
 using namespace std;
 using namespace sf;
 
-const size_t columns = 16, rows = 10;
 
-enum Side {
-	Left,
-	Right,
-	Up, 
-	Down
-};
+void updateVec(vector<pair<int, int>>& coord_for_draw, int x, int y) {
+	coord_for_draw.push_back(make_pair(x, y));
+}
 
-void printMap(int(&map)[rows][columns]) {
+DrawnMap::DrawnMap(int size_x, int size_y, string name_window) {
+	my_window.create(VideoMode(size_x * 10, size_y * 10), name_window);
+	this->size_x = size_x;
+	this->size_y = size_y;
+	Map = new int* [size_x];
+	for (int i = 0; i < size_x; i++)
+	{
+		Map[i] = new int[size_y];
+		for (int j = 0; j < size_y; j++)
+			Map[i][j] = 0;
+	}
+}
+
+//DrawnMap::~DrawnMap() {
+//	
+//	for (int i = 0; i < size_x; i++)
+//	{
+//		delete[] Map[i];
+//	}
+//	delete[]Map;
+//}
+
+void DrawnMap::setMap(int** NewMap)
+{
+	for (int i = 0; i < rows; i++)
+		for (int j = 0; j < columns; j++)
+			this->Map[i][j] = NewMap[i][j];
+}
+
+void DrawnMap::setValue(int x, int y, int value)
+{
+	this->Map[x][y] = value;
+}
+
+void DrawnMap::printMap() {
 	for (size_t row = 0; row < rows; ++row) {
 		for (size_t column = 0; column < columns; ++column) {
-			cout << map[row][column] << " ";
+			cout << Map[row][column] << " ";
 		}
 		cout << endl;
 	}
 }
 
-void drawObstacles(RenderWindow& window, int(&map)[rows][columns]) {
+void DrawnMap::drawObstacles(){
 	RectangleShape rectangle(Vector2f(10, 10));
 	rectangle.setFillColor(Color(175, 180, 240));
 
@@ -32,36 +59,32 @@ void drawObstacles(RenderWindow& window, int(&map)[rows][columns]) {
 	{
 		for (size_t column = 0; column < columns; ++column)
 		{
-			if (map[row][column] == 1)
+			if (Map[row][column] == 1)
 			{
 				rectangle.setPosition(column * 10, row * 10);
-				window.draw(rectangle);
+				my_window.draw(rectangle);
 			}
 		}
 	}
 }
 
-void drawTrace(RenderWindow& window, const vector<pair<int, int>>& coord_for_draw) {
+void DrawnMap::drawTrace(const vector<pair<int, int>>& coord_for_draw) {
 	CircleShape small_circle(5);
 	small_circle.setFillColor(Color(250, 250, 250));
 	for (auto item : coord_for_draw) {
 		small_circle.setPosition(item.first, item.second);
-		window.draw(small_circle);
+		my_window.draw(small_circle);
 	}
 }
 
-void drawCircle(RenderWindow& window, int& x, int& y) {
+void DrawnMap::drawCircle(int& x, int& y) {
 	CircleShape circle(5);
 	circle.setFillColor(Color(250, 0, 250));
 	circle.setPosition(x, y);
-	window.draw(circle);
+	my_window.draw(circle);
 }
 
-void updateVec(vector<pair<int, int>>& coord_for_draw, int x, int y) {
-	coord_for_draw.push_back(make_pair(x, y));
-}
-
-void moving(int(&map)[rows][columns], int& x, int& y, vector<pair<int, int>>& coord_for_draw, Side& si) {
+void DrawnMap::moving(int& x, int& y, vector<pair<int, int>>& coord_for_draw, Side& si) {
 	int adder_x = 0, adder_y = 0, d_x = 0, d_y = 0, temp_x = x, temp_y = y, for_if = 0;
 	
 	switch (si) {
@@ -72,23 +95,81 @@ void moving(int(&map)[rows][columns], int& x, int& y, vector<pair<int, int>>& co
 	}
 
 	if (for_if % 10 == 0) {
-		if (map[y / 10 + adder_y][x / 10 + adder_x] != 1) {
-			map[y / 10 + adder_y][x / 10 + adder_x] = 2;
+		if (Map[y / 10 + adder_y][x / 10 + adder_x] != 1) {
+			Map[y / 10 + adder_y][x / 10 + adder_x] = 2;
 			updateVec(coord_for_draw, x, y);
 		}
 		else { x = temp_x; y = temp_y; }
 
 	}
 	else if (for_if % 10 != 0) {
-		int f = map[y / 10 + adder_y][x / 10 + adder_x];
-		int s = map[y / 10 + d_y + adder_y][x / 10 + d_x + adder_x];
+		int f = Map[y / 10 + adder_y][x / 10 + adder_x];
+		int s = Map[y / 10 + d_y + adder_y][x / 10 + d_x + adder_x];
 		if (f != 1 && s != 1) {
-			map[y / 10 + adder_y][x / 10 + adder_x] = 2;
-			map[y / 10 + d_y + adder_y][x / 10 + d_x + adder_x] = 2;
+			Map[y / 10 + adder_y][x / 10 + adder_x] = 2;
+			Map[y / 10 + d_y + adder_y][x / 10 + d_x + adder_x] = 2;
 			updateVec(coord_for_draw, x, y);
 		}
 		else { x = temp_x; y = temp_y; }
 	}
+}
+
+void DrawnMap::loop(int& x, int& y, vector<pair<int, int>>& coord_for_draw) {
+	while (my_window.isOpen())
+	{
+		Event event;
+		while (my_window.pollEvent(event))
+		{
+
+			if (event.type == Event::Closed) {
+				my_window.close();
+			}
+			if (event.type == Event::KeyPressed) {
+				if (event.key.code == Keyboard::Left) {
+					Side side = Side::Left;
+					moving(x, y, coord_for_draw, side);
+				}
+
+				else if (event.key.code == Keyboard::Right) {
+					Side side = Side::Right;
+					moving(x, y, coord_for_draw, side);
+				}
+
+				else if (event.key.code == Keyboard::Up) {
+					Side side = Side::Up;
+					moving(x, y, coord_for_draw, side);
+				}
+
+				else if (event.key.code == Keyboard::Down) {
+					Side side = Side::Down;
+					moving(x, y, coord_for_draw, side);
+				}
+
+			}
+		}
+
+		my_window.clear(Color(100, 100, 100));
+
+		drawObstacles();
+
+		drawTrace(coord_for_draw);
+
+		drawCircle(x, y);
+
+		my_window.display();
+
+	}
+}
+
+int** allocateForMap(int(&map)[rows][columns]) {
+	int** A = new int* [rows];
+	for (int i = 0; i < rows; i++)
+	{
+		A[i] = new int[columns];
+		for (int j = 0; j < columns; j++)
+			A[i][j] = map[i][j];
+	}
+	return A;
 }
 
 int main()
@@ -106,56 +187,17 @@ int main()
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 	};
 
+	int** double_p_map = allocateForMap(map);
+
 	vector<pair<int, int>> coord_for_draw = { {10, 10} };
 
-	RenderWindow window(VideoMode(160, 100), "Room");
 	int started_x = 10, started_y = 10; map[started_y / 10][started_x / 10] = 2;
 	int x = started_x, y = started_y;
-	while (window.isOpen())
-	{
-		Event event;
-		while (window.pollEvent(event))
-		{
-			if (event.type == Event::Closed) {
-				window.close();
-				printMap(map);
-			}
-			if (event.type == Event::KeyPressed) {
 
+	DrawnMap dm(columns, rows, "Window1");
+	dm.setMap(double_p_map);
 
-				if (event.key.code == Keyboard::Left) {
-					Side side = Side::Left;
-					moving(map, x, y, coord_for_draw, side);
-				}
-
-				if (event.key.code == Keyboard::Right) {
-					Side side = Side::Right;
-					moving(map, x, y, coord_for_draw, side);
-				}
-
-				else if (event.key.code == Keyboard::Up) {
-					Side side = Side::Up;
-					moving(map, x, y, coord_for_draw, side);
-				}
-
-				else if (event.key.code == Keyboard::Down) {
-					Side side = Side::Down;
-					moving(map, x, y, coord_for_draw, side);
-				}
-
-			}
-		}
-
-		window.clear(Color(100, 100, 100));
-
-		drawObstacles(window, map);
-		
-		drawTrace(window, coord_for_draw);
-
-		drawCircle(window, x, y);
-
-		window.display();
-	}
-
+	dm.loop(x, y, coord_for_draw);
+	
 	return 0;
 }
