@@ -1,11 +1,8 @@
 #include <iostream>
 #include "DrawnMap.h"
-using namespace std;
-using namespace sf;
 
-
-void updateVec(vector<pair<int, int>>& coord_for_draw, int x, int y) {
-	coord_for_draw.push_back(make_pair(x, y));
+void updateVec(Trace& coord_for_draw, int x, int y) {
+	coord_for_draw.AddPoint(x, y);
 }
 
 DrawnMap::DrawnMap(int size_x, int size_y, string name_window) {
@@ -21,14 +18,14 @@ DrawnMap::DrawnMap(int size_x, int size_y, string name_window) {
 	}
 }
 
-//DrawnMap::~DrawnMap() {
-//	
-//	for (int i = 0; i < size_x; i++)
-//	{
-//		delete[] Map[i];
-//	}
-//	delete[]Map;
-//}
+DrawnMap::~DrawnMap() {
+	
+	for (int i = 0; i < size_x; i++)
+	{
+		delete[] Map[i];
+	}
+	delete[]Map;
+}
 
 void DrawnMap::setMap(int** NewMap)
 {
@@ -68,10 +65,10 @@ void DrawnMap::drawObstacles(){
 	}
 }
 
-void DrawnMap::drawTrace(const vector<pair<int, int>>& coord_for_draw) {
+void DrawnMap::drawTrace(Trace& coord_for_draw) {
 	CircleShape small_circle(5);
 	small_circle.setFillColor(Color(250, 250, 250));
-	for (auto item : coord_for_draw) {
+	for (auto item : coord_for_draw.GetPoints()) {
 		small_circle.setPosition(item.first, item.second);
 		my_window.draw(small_circle);
 	}
@@ -84,14 +81,14 @@ void DrawnMap::drawCircle(int& x, int& y) {
 	my_window.draw(circle);
 }
 
-void DrawnMap::moving(int& x, int& y, vector<pair<int, int>>& coord_for_draw, Side& si) {
+void DrawnMap::moving(int& x, int& y, Trace& coord_for_draw, Side& si) {
 	int adder_x = 0, adder_y = 0, d_x = 0, d_y = 0, temp_x = x, temp_y = y, for_if = 0;
 	
 	switch (si) {
-	case Left: x -= 1; d_y = 1; for_if = y; break;
-	case Right: x += 1; d_y = 1; adder_x = (x % 10 == 0) ? 0 : 1; for_if = y; break;
-	case Up: y -= 1; d_x = 1; for_if = x; break;
-	case Down: y += 1; d_x = 1; adder_y = (y % 10 == 0) ? 0 : 1; for_if = x; break;
+	case Side::Left: x -= 1; d_y = 1; for_if = y; break;
+	case Side::Right: x += 1; d_y = 1; adder_x = (x % 10 == 0) ? 0 : 1; for_if = y; break;
+	case Side::Up: y -= 1; d_x = 1; for_if = x; break;
+	case Side::Down: y += 1; d_x = 1; adder_y = (y % 10 == 0) ? 0 : 1; for_if = x; break;
 	}
 
 	if (for_if % 10 == 0) {
@@ -114,7 +111,7 @@ void DrawnMap::moving(int& x, int& y, vector<pair<int, int>>& coord_for_draw, Si
 	}
 }
 
-void DrawnMap::loop(int& x, int& y, vector<pair<int, int>>& coord_for_draw) {
+void DrawnMap::loop(int& x, int& y, Trace& coord_for_draw) {
 	while (my_window.isOpen())
 	{
 		Event event;
@@ -124,40 +121,33 @@ void DrawnMap::loop(int& x, int& y, vector<pair<int, int>>& coord_for_draw) {
 			if (event.type == Event::Closed) {
 				my_window.close();
 			}
-			if (event.type == Event::KeyPressed) {
-				if (event.key.code == Keyboard::Left) {
-					Side side = Side::Left;
-					moving(x, y, coord_for_draw, side);
-				}
+		}
+		if (event.type == Event::KeyPressed) {
+			if (event.key.code == Keyboard::Left) {
+				Side side = Side::Left;
+				moving(x, y, coord_for_draw, side);
+			}
 
-				else if (event.key.code == Keyboard::Right) {
-					Side side = Side::Right;
-					moving(x, y, coord_for_draw, side);
-				}
+			else if (event.key.code == Keyboard::Right) {
+				Side side = Side::Right;
+				moving(x, y, coord_for_draw, side);
+			}
 
-				else if (event.key.code == Keyboard::Up) {
-					Side side = Side::Up;
-					moving(x, y, coord_for_draw, side);
-				}
+			else if (event.key.code == Keyboard::Up) {
+				Side side = Side::Up;
+				moving(x, y, coord_for_draw, side);
+			}
 
-				else if (event.key.code == Keyboard::Down) {
-					Side side = Side::Down;
-					moving(x, y, coord_for_draw, side);
-				}
-
+			else if (event.key.code == Keyboard::Down) {
+				Side side = Side::Down;
+				moving(x, y, coord_for_draw, side);
 			}
 		}
-
 		my_window.clear(Color(100, 100, 100));
-
 		drawObstacles();
-
 		drawTrace(coord_for_draw);
-
 		drawCircle(x, y);
-
 		my_window.display();
-
 	}
 }
 
@@ -189,15 +179,12 @@ int main()
 
 	int** double_p_map = allocateForMap(map);
 
-	vector<pair<int, int>> coord_for_draw = { {10, 10} };
+	Trace coord_for_draw({ {10, 10} });
 
 	int started_x = 10, started_y = 10; map[started_y / 10][started_x / 10] = 2;
 	int x = started_x, y = started_y;
 
 	DrawnMap dm(columns, rows, "Window1");
 	dm.setMap(double_p_map);
-
 	dm.loop(x, y, coord_for_draw);
-	
-	return 0;
 }

@@ -18,9 +18,15 @@
     <ClCompile Include="DrawingMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Trace.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DrawnMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Trace.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
