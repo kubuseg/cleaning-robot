@@ -16,13 +16,10 @@ public:
 
     Trace(vector<point_t> a);
 
-    float GetLenght();
-
-    vector<point_t> GetPoints();
-
-    void AddPoint(int x, int y);
-
-    void DeleteLastPoint();
-
-    int GetAmountOfPoints() const;
+    float getLenght();
+    vector<point_t> getPoints();
+    void addPoint(int x, int y);
+    void deleteLastPoint();
+    int getAmountOfPoints() const;
+    bool operator==(vector<point_t>& tr2);
 };

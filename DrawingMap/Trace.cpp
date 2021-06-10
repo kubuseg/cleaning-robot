@@ -1,9 +1,4 @@
-#include <iostream>
 #include "Trace.h"
-#include <vector>
-#include <tuple>
-
-using namespace std;
 
 typedef pair<int, int> point_t;
 
@@ -18,7 +13,7 @@ Trace::Trace(vector<point_t> a)
     points = a;
 }
 
-float Trace::GetLenght()
+float Trace::getLenght()
 {
     float lenght = 0;
     if (points.size() >= 2)
@@ -35,25 +30,30 @@ float Trace::GetLenght()
     return lenght;
 }
 
-vector<point_t> Trace::GetPoints()
+vector<point_t> Trace::getPoints()
 {
     return points;
 }
 
-void Trace::AddPoint(int x, int y)
+void Trace::addPoint(int x, int y)
 {
     amount_of_points++;
     points.push_back(make_pair(x, y));
 }
 
-void Trace::DeleteLastPoint()
+void Trace::deleteLastPoint()
 {
     amount_of_points--;
     points.pop_back();
 }
 
 
-int Trace::GetAmountOfPoints() const
+int Trace::getAmountOfPoints() const
 {
     return amount_of_points;
+}
+
+bool Trace::operator==(vector<point_t>& tr2)
+{
+    return this->points == tr2;
 }

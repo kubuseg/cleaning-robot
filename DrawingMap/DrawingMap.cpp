@@ -1,9 +1,4 @@
-#include <iostream>
 #include "DrawnMap.h"
-
-void updateVec(Trace& coord_for_draw, int x, int y) {
-	coord_for_draw.AddPoint(x, y);
-}
 
 DrawnMap::DrawnMap(int size_x, int size_y, string name_window) {
 	my_window.create(VideoMode(size_x * 10, size_y * 10), name_window);
@@ -68,7 +63,7 @@ void DrawnMap::drawObstacles(){
 void DrawnMap::drawTrace(Trace& coord_for_draw) {
 	CircleShape small_circle(5);
 	small_circle.setFillColor(Color(250, 250, 250));
-	for (auto item : coord_for_draw.GetPoints()) {
+	for (auto item : coord_for_draw.getPoints()) {
 		small_circle.setPosition(item.first, item.second);
 		my_window.draw(small_circle);
 	}
@@ -81,20 +76,20 @@ void DrawnMap::drawCircle(int& x, int& y) {
 	my_window.draw(circle);
 }
 
-void DrawnMap::moving(int& x, int& y, Trace& coord_for_draw, Side& si) {
+void DrawnMap::moving(int& x, int& y, Trace& coord_for_draw, Direction& di) {
 	int adder_x = 0, adder_y = 0, d_x = 0, d_y = 0, temp_x = x, temp_y = y, for_if = 0;
 	
-	switch (si) {
-	case Side::Left: x -= 1; d_y = 1; for_if = y; break;
-	case Side::Right: x += 1; d_y = 1; adder_x = (x % 10 == 0) ? 0 : 1; for_if = y; break;
-	case Side::Up: y -= 1; d_x = 1; for_if = x; break;
-	case Side::Down: y += 1; d_x = 1; adder_y = (y % 10 == 0) ? 0 : 1; for_if = x; break;
+	switch (di) {
+	case Direction::Left: x -= 1; d_y = 1; for_if = y; break;
+	case Direction::Right: x += 1; d_y = 1; adder_x = (x % 10 == 0) ? 0 : 1; for_if = y; break;
+	case Direction::Up: y -= 1; d_x = 1; for_if = x; break;
+	case Direction::Down: y += 1; d_x = 1; adder_y = (y % 10 == 0) ? 0 : 1; for_if = x; break;
 	}
 
 	if (for_if % 10 == 0) {
 		if (Map[y / 10 + adder_y][x / 10 + adder_x] != 1) {
 			Map[y / 10 + adder_y][x / 10 + adder_x] = 2;
-			updateVec(coord_for_draw, x, y);
+			coord_for_draw.addPoint(x, y);
 		}
 		else { x = temp_x; y = temp_y; }
 
@@ -105,7 +100,7 @@ void DrawnMap::moving(int& x, int& y, Trace& coord_for_draw, Side& si) {
 		if (f != 1 && s != 1) {
 			Map[y / 10 + adder_y][x / 10 + adder_x] = 2;
 			Map[y / 10 + d_y + adder_y][x / 10 + d_x + adder_x] = 2;
-			updateVec(coord_for_draw, x, y);
+			coord_for_draw.addPoint(x, y);
 		}
 		else { x = temp_x; y = temp_y; }
 	}
@@ -119,28 +114,29 @@ void DrawnMap::loop(int& x, int& y, Trace& coord_for_draw) {
 		{
 
 			if (event.type == Event::Closed) {
+				printMap();
 				my_window.close();
 			}
 		}
 		if (event.type == Event::KeyPressed) {
 			if (event.key.code == Keyboard::Left) {
-				Side side = Side::Left;
-				moving(x, y, coord_for_draw, side);
+				Direction direct = Direction::Left;
+				moving(x, y, coord_for_draw, direct);
 			}
 
 			else if (event.key.code == Keyboard::Right) {
-				Side side = Side::Right;
-				moving(x, y, coord_for_draw, side);
+				Direction direct = Direction::Right;
+				moving(x, y, coord_for_draw, direct);
 			}
 
 			else if (event.key.code == Keyboard::Up) {
-				Side side = Side::Up;
-				moving(x, y, coord_for_draw, side);
+				Direction direct = Direction::Up;
+				moving(x, y, coord_for_draw, direct);
 			}
 
 			else if (event.key.code == Keyboard::Down) {
-				Side side = Side::Down;
-				moving(x, y, coord_for_draw, side);
+				Direction direct = Direction::Down;
+				moving(x, y, coord_for_draw, direct);
 			}
 		}
 		my_window.clear(Color(100, 100, 100));
