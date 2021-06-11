@@ -1,4 +1,5 @@
 #include "Trace.h"
+#include "Map.h"
 #include <SFML/Graphics.hpp>
 #include <string>
 
@@ -6,19 +7,17 @@ using namespace sf;
 
 enum class Direction { Left, Right, Up, Down };
 
-const size_t columns = 16, rows = 10;
+//const size_t columns = 16, rows = 10;
 
 class DrawnMap {
 private:
 	int size_x;
 	int size_y;
-	int** Map;
+	Map* map2d;
 public:
 	RenderWindow my_window;
-	DrawnMap(int size_x, int size_y, string name_window); 
-	~DrawnMap();
+	DrawnMap(Map* map2d, string name_window);
 
-	void setMap(int** NewMap);
 	void setValue(int x, int y, int value);
 	void printMap();
 	void drawObstacles();
