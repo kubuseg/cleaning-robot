@@ -28,7 +28,7 @@ struct Point
 
 static std::vector<std::pair<Point, Point>> Obstacles;
 
-constexpr size_t COLUMNS = 10, ROWS = 13;
+constexpr size_t COLUMNS = 11, ROWS = 13;
 
 using array = std::array<std::array<int, COLUMNS>, ROWS>;
 
@@ -306,7 +306,7 @@ void showRoad(std::vector<Point> steps, const array& map)
 	array nMap = {};
 	auto rows = map.size();
 	auto columns = map[0].size();
-	__int64 w = std::to_string((rows - 2) * (columns - 2)).length();
+	__int64 w = std::to_string(steps.size()).length();
 	int n = 0;
 	for (const auto& step : steps) {
 		nMap[step.y][step.x] = ++n;
@@ -551,7 +551,7 @@ std::vector<Point> avoidObstacleFromLeft(const size_t x1, const size_t y1, std::
 }
 
 std::vector<Point> avoidObstacle(const size_t x1, const size_t y1, std::vector<Point> orginalRoad, const array& map)
-{   //Próbujê omin¹æ z 2 stron i patrze która droga jest krótsza
+{   //PrÃ³bujÄ™ ominÄ…Ä‡ z 2 stron i patrze ktÃ³ra droga jest krÃ³tsza
 	std::vector<Point> roadFromRightSide = avoidObstacleFromRight(x1, y1, orginalRoad, map);
 	std::vector<Point> roadFromLeftSide = avoidObstacleFromLeft(x1, y1, orginalRoad, map);
 	if (roadFromLeftSide.size() < roadFromRightSide.size())
@@ -660,11 +660,12 @@ int main()
 	{
 		addObstacle(0, 4, 5, 5, map);
 		addObstacle(8, 3, 9, 4, map);
-		addObstacle(6, 8, 7, 12, map);
+		addObstacle(6, 8, 7, 11, map);
+		addObstacle(0, 8, 3, 9, map);
 	}
 	catch (std::invalid_argument& i)
 	{
-		std::cerr << i.what();
+		std::cerr << i.what()<<std::endl;
 	}
 	
 	std::vector<Point> steps = road(1, 1, map);
