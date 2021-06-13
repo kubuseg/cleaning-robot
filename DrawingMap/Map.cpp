@@ -2,18 +2,6 @@
 
 using namespace std;
 
-//Map::Map(int rows, int columns) {
-//    this->map2d = map2d;
-//    this->rows = map2d.size();
-//    vector<vector<int>> map2d = {};
-//    for (int i = 0; i < rows; i++) {
-//        vector<int> row = {};
-//        for (int j = 0; j < columns; j++)
-//            row.push_back(0);
-//        map2d.push_back(row);
-//    }
-//}
-
 Map::Map(vector<vector<int>>& map2d) {
     this->map2d = map2d;
     this->rows= map2d.size();
@@ -39,7 +27,7 @@ void Map::setMap(vector<vector<int>>& map2d) {
 }
 
 void Map::setValue(int x, int y, int value) {
-    this->map2d[x][y] = value;
+    this->map2d[y][x] = value;
 }
 
 void Map::addWalls() {

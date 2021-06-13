@@ -9,15 +9,6 @@ namespace MapTest
 	{
 	public:
 
-		/*TEST_METHOD(Constructor1)
-		{
-			int rows = 2;
-			int columns = 2;
-			Map m1(rows, columns);
-			vector<vector<int>> m2 = { {0, 0}, {0, 0} };
-			Assert::IsTrue(m1.map2d == m2);
-		}*/
-
 		TEST_METHOD(ConstructorAndGet)
 		{
 			vector<vector<int>> m2 = { {1,1,1,1}, {1,0,0,0}, {1,0,0,0} };

@@ -3,8 +3,6 @@
 #include<iostream>
 #include <tuple>
 using namespace std;
-typedef pair<int, int> point_t;
-
 class Map
 {
 private:
@@ -13,7 +11,6 @@ private:
     vector<vector<int>> map2d;
 public:
     Map();
-    //Map(int rows, int columns);
     Map(vector<vector<int>>& map2d);
     int getRows();
     int getColumns();
