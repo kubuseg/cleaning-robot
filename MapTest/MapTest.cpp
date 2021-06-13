@@ -33,8 +33,11 @@ namespace MapTest
 		{
 			vector<vector<int>> m2 = { {0,0,1,0}, {0,1,0,0}, {0,1,0,1} };
 			Map m1(m2);
-			m1.setValue(1, 0, 5);
-			vector<vector<int>> m3 = { {0,0,1,0}, {5,1,0,0}, {0,1,0,1} };
+			m1.setValue(0, 1, 5);
+			vector<vector<int>> m3 = { 
+				{0,0,1,0}, 
+				{5,1,0,0}, 
+				{0,1,0,1} };
 			Assert::IsTrue(m1.getMap() == m3);
 		}
 

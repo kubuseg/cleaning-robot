@@ -1,22 +1,17 @@
 #include "Track.h"
 
-Track::Track()
-{
-    amount_of_points = 0;
-}
-
 Track::Track(vector<Point> a)
 {
     amount_of_points = a.size();
     points = a;
 }
 
-vector<Point> Track::getPoints() const
+vector<Point> Track::getPoints()
 {
     return points;
 }
 
-int Track::getAmountOfPoints() const
+int Track::getAmountOfPoints()
 {
     return amount_of_points;
 }
@@ -97,3 +92,15 @@ Direction Track::checkSides(const size_t x, const size_t y, Map* map2d)
 		return Direction::Unknown;
 }
 
+bool operator==(vector<Point>& tr1, vector<Point>& tr2) {
+	if (tr2.size() != tr1.size()) return false;
+	for (int i = 0; i < tr1.size(); ++i)
+		if (tr2[i].x != tr1[i].x || tr2[i].y != tr1[i].y)
+			return false;
+	return true;
+}
+
+bool operator==(Point& p1, Point& p2) {
+	if (p1.x != p2.x || p1.y != p2.y) return false;
+	return true;
+}
