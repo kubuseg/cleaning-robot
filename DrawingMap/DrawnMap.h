@@ -7,10 +7,7 @@ using namespace sf;
 
 const int scale = 5;
 
-struct Dir
-{
-	Direction current, old;
-};
+
 
 class DrawnMap {
 private:
