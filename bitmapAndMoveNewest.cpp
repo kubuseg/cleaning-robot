@@ -642,11 +642,6 @@ std::vector<Point> road(const size_t x0, const size_t y0, array& map)
 				pt = steps.back();
 				map[pt.y][pt.x] = 2;
 			}
-			else
-			{
-				break;
-			}
-
 		}
 	}
 	return steps;
