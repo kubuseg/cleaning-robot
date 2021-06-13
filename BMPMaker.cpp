@@ -1,5 +1,4 @@
-﻿// BMPMaker.cpp : Ten plik zawiera funkcję „main”. W nim rozpoczyna się i kończy wykonywanie programu.
-//
+
 
 #include <iostream>
 #include<tuple>
@@ -17,8 +16,8 @@ int main()
 	Robot robot;
 
 	picture.addLayer(&room, 0);
-	//picture.addLayer(&walls, 1);
-	//picture.addLayer(&robot, 2);
+	picture.addLayer(&walls, 1);
+	picture.addLayer(&robot, 2);
 
 	bool state;
 	std::tuple<ILayer*, bool> layer = picture.getLayer(0);
